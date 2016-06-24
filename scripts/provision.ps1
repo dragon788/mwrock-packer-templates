@@ -4,17 +4,11 @@ $ErrorActionPreference = "Stop"
 Write-Host "Enabling file sharing firewale rules"
 netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=yes
 
-if(Test-Path "C:\Users\vagrant\VBoxGuestAdditions.iso") {
+# Drive is E: because Windows ISO is still mounted at this point
+if(Test-Path "E:\VboxWindowsAdditions.exe") {
     Write-Host "Installing Guest Additions"
     certutil -addstore -f "TrustedPublisher" A:\oracle.cer
-    cinst 7zip.commandline -y
-    Move-Item C:\Users\vagrant\VBoxGuestAdditions.iso C:\Windows\Temp
-    7z x C:\Windows\Temp\VBoxGuestAdditions.iso -oC:\Windows\Temp\virtualbox
-
-    Start-Process -FilePath "C:\Windows\Temp\virtualbox\VBoxWindowsAdditions.exe" -ArgumentList "/S" -WorkingDirectory "C:\Windows\Temp\virtualbox" -Wait
-
-    Remove-Item C:\Windows\Temp\virtualbox -Recurse -Force
-    Remove-Item C:\Windows\Temp\VBoxGuestAdditions.iso -Force
+    Start-Process -FilePath "E:\VBoxWindowsAdditions.exe" -ArgumentList "/S" -Wait
 }
 
 Write-Host "Cleaning SxS..."
